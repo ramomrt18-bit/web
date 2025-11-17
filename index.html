@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MACGGYM.com</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --primary-dark: #c0392b;
+            --primary-light: #ff6b6b;
+            --secondary: #3498db;
+            --secondary-dark: #2980b9;
+            --accent: #f39c12;
+            --accent-dark: #e67e22;
+            --light: #f5f5f5;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --success-dark: #27ae60;
+            --warning: #f39c12;
+            --warning-dark: #e67e22;
+            --morning: #3498db;
+            --morning-dark: #2980b9;
+            --afternoon: #e74c3c;
+            --afternoon-dark: #c0392b;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+        }
+       
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+       
+        body {
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+                url('yeababy.png') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--light);
+            line-height: 1.6;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+       
+        /* PANTALLA DE SELECCIÓN DE SESIÓN */
+        #session-selection-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+       
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(30, 30, 30, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+       
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+       
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+       
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+       
+        .logo-icon {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+       
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+       
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+       
+        .session-selection {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+       
+        .session-card {
+            background: linear-gradient(145deg, rgba(44, 44, 44, 0.4), rgba(37, 37, 37, 0.4));
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .session-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+       
+        .session-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+       
+        .session-card.morning:hover {
+            border-color: var(--morning);
+        }
+       
+        .session-card.afternoon:hover {
+            border-color: var(--afternoon);
+        }
+       
+        .session-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+       
+        .session-morning .session-icon {
+            background: linear-gradient(135deg, var(--morning), var(--morning-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+       
+        .session-afternoon .session-icon {
+            background: linear-gradient(135deg, var(--afternoon), var(--afternoon-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+       
+        .session-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+       
+        .session-time {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            width: 100%;
+        }
+       
+        .session-morning .session-time {
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--morning);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+       
+        .session-afternoon .session-time {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--afternoon);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+       
+        .session-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+       
+        .session-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+       
+        .session-features li:last-child {
+            border-bottom: none;
+        }
+       
+        .session-features li i {
+            margin-right: 10px;
+            width: 20px;
+            font-size: 1.1rem;
+        }
+       
+        .session-morning .session-features li i {
+            color: var(--morning);
+        }
+       
+        .session-afternoon .session-features li i {
+            color: var(--afternoon);
+        }
+       
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+       
+        .btn-morning {
+            background: linear-gradient(135deg, var(--morning), var(--morning-dark));
+            color: white;
+        }
+       
+        .btn-afternoon {
+            background: linear-gradient(135deg, var(--afternoon), var(--afternoon-dark));
+            color: white;
+        }
+       
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
+        }
+       
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--light);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+       
+        /* PANTALLA DE GESTIÓN */
+        #management-screen {
+            display: none;
+            min-height: 100vh;
+        }
+       
+        .management-header {
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--primary);
+            padding: 1rem;
+            position: none;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+       
+        .header-top {
+            display: flex;           
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+       
+        .management-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+       
+        .management-logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+       
+        .management-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+       
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+       
+        .session-morning-info {
+            background: linear-gradient(135deg, var(--morning), var(--morning-dark));
+            color: white;
+        }
+       
+        .session-afternoon-info {
+            background: linear-gradient(135deg, var(--afternoon), var(--afternoon-dark));
+            color: white;
+        }
+       
+        .change-session {
+            margin-top: 10px;
+            text-align: center;
+        }
+       
+        .change-session-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+       
+        .change-session-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+       
+        .management-container {
+            max-width: 100%;
+            padding: 1rem;
+        }
+       
+        .tabs {
+            display: flex;
+            background-color: rgba(30, 30, 30, 0.6);
+            border-radius: 15px 15px 0 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+        }
+       
+        .tab {
+            padding: 15px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--light);
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+       
+        .tab:last-child {
+            border-right: none;
+        }
+       
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+       
+        .tab:not(.active):hover {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+       
+        .tab i {
+            margin-right: 5px;
+            font-size: 1rem;
+        }
+       
+        .tab-content {
+            display: none;
+            background-color: rgba(30, 30, 30, 0.4);
+            padding: 1.5rem;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            color: var(--light);
+        }
+       
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+       
+        .form-group {
+            margin-bottom: 20px;
+        }
+       
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--light);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+       
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--light);
+        }
+       
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+        }
+       
+        .management-btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+       
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+       
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
+        }
+       
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+        }
+       
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
+        }
+       
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+            color: white;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            width: auto;
+        }
+       
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+       
+        .btn-danger {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            width: auto;
+        }
+       
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+       
+        .client-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.4);
+        }
+       
+        .client-table th, .client-table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+       
+        .client-table th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+       
+        .client-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+       
+        .client-table tr:last-child td {
+            border-bottom: none;
+        }
+       
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+       
+        .status-active {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+       
+        .status-expired {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+       
+        .status-daily {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+            border: 1px solid rgba(243, 156, 18, 0.3);
+        }
+       
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+       
+        .summary-card {
+            background: linear-gradient(145deg, rgba(44, 44, 44, 0.6), rgba(37, 37, 37, 0.6));
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .summary-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+       
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+       
+        .summary-card h3 {
+            margin-bottom: 10px;
+            color: var(--light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+       
+        .summary-card .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+       
+        .summary-card.income {
+            border-top-color: var(--success);
+        }
+       
+        .summary-card.income .value {
+            color: var(--success);
+        }
+       
+        .alert {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid transparent;
+        }
+       
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border-left-color: var(--success);
+        }
+       
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border-left-color: var(--secondary);
+        }
+       
+        .hidden {
+            display: none;
+        }
+       
+        .payment-history {
+            margin-top: 20px;
+        }
+       
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+       
+        .actions button {
+            flex: 1;
+        }
+       
+        .last-update {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+       
+        .card {
+            background: linear-gradient(145deg, rgba(44, 44, 44, 0.6), rgba(37, 37, 37, 0.4));
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+       
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+       
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border: none;
+        }
+       
+        .floating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+       
+        /* Responsive */
+        @media (max-width: 768px) {
+            .session-selection {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+           
+            .logo h1 {
+                font-size: 2rem;
+            }
+           
+            .session-card {
+                padding: 1.5rem;
+            }
+           
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+           
+            .tab {
+                padding: 12px 8px;
+                font-size: 0.8rem;
+            }
+           
+            .header-top {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+       
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+           
+            header {
+                padding: 1.5rem;
+            }
+           
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+           
+            .session-icon {
+                font-size: 3rem;
+            }
+           
+            .session-card h2 {
+                font-size: 1.5rem;
+            }
+           
+            .management-container {
+                padding: 0.5rem;
+            }
+           
+            .tab-content {
+                padding: 1rem;
+            }
+           
+            .client-table th, .client-table td {
+                padding: 10px 8px;
+            }
+        }
+       
+        /* Estilos para mejorar la experiencia táctil */
+        .btn, .tab, .session-card {
+            -webkit-tap-highlight-color: transparent;
+        }
+       
+        /* Animaciones suaves */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+       
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+       
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+       
+        /* Efectos deportivos adicionales */
+        .workout-motivation {      
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--primary);
+            max-width: 250px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);           
+        }
+    </style>
+</head>
+<body>
+    <!-- PANTALLA DE SELECCIÓN DE SESIÓN -->
+    <div id="session-selection-screen">
+        <div class="container">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-dumbbell"></i></div>
+                    <h1>MACGGYM</h1>
+                </div>
+                <p class="subtitle">Yeah buddy! Lightweight baby! - Selecciona tu sesión</p>
+            </header>
+           
+            <div class="session-selection">
+                <div class="session-card session-morning">
+                    <div class="session-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h2>Sesión Mañana</h2>
+                    <div class="session-time">
+                        <i class="fas fa-clock"></i> 5:00 AM - 10:00 AM
+                    </div>
+                    <ul class="session-features">
+                        <li><i class="fas fa-check"></i> Entrenamiento energizante</li>
+                        <li><i class="fas fa-check"></i> Ambiente fresco y tranquilo</li>
+                        <li><i class="fas fa-check"></i> Ideal para empezar el día</li>
+                        <li><i class="fas fa-check"></i> Menos concurrido</li>
+                    </ul>
+                    <button class="btn btn-morning" onclick="openSession('morning')">
+                        <i class="fas fa-door-open"></i> Entrar a Sesión Mañana
+                    </button>
+                </div>
+               
+                <div class="session-card session-afternoon">
+                    <div class="session-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h2>Sesión Tarde</h2>
+                    <div class="session-time">
+                        <i class="fas fa-clock"></i> 4:00 PM - 9:30 PM
+                    </div>
+                    <ul class="session-features">
+                        <li><i class="fas fa-check"></i> Entrenamiento intenso</li>
+                        <li><i class="fas fa-check"></i> Ambiente social y motivador</li>
+                        <li><i class="fas fa-check"></i> Perfecto después del trabajo</li>
+                        <li><i class="fas fa-check"></i> Mayor disponibilidad de entrenadores</li>
+                    </ul>
+                    <button class="btn btn-afternoon" onclick="openSession('afternoon')">
+                        <i class="fas fa-door-open"></i> Entrar a Sesión Tarde
+                    </button>
+                </div>
+            </div>
+           
+            <footer>
+                <p>Te destruiré como no tienes idea, pero si soportas te subiré a la cima como no te imaginas"
+
+- La disciplina -</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE GESTIÓN -->
+    <div id="management-screen">
+        <div class="management-header">
+            <div class="header-top">
+                <div class="management-logo">
+                    <div class="management-logo-icon"><i class="fas fa-dumbbell"></i></div>
+                   <h1>MACGGYM</h1>
+                </div>
+                <div id="session-display" class="session-info session-morning-info">
+                    <i class="fas fa-sun"></i>
+                    <span>Sesión Mañana: 5:00 AM - 10:00 AM</span>
+                </div>
+            </div>
+            <div class="change-session">
+                <button class="change-session-btn" onclick="changeSession()">
+                    <i class="fas fa-exchange-alt"></i> Cambiar de Sesión
+                </button>
+            </div>
+        </div>
+       
+        <div class="management-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="register">
+                    <i class="fas fa-user-plus"></i> Registrar
+                </div>
+                <div class="tab" data-tab="clients">
+                    <i class="fas fa-users"></i> Clientes
+                </div>
+                <div class="tab" data-tab="payments">
+                    <i class="fas fa-money-bill-wave"></i> Pagos
+                </div>
+                <div class="tab" data-tab="reports">
+                    <i class="fas fa-chart-bar"></i> Reportes
+                </div>
+            </div>
+           
+            <div id="register" class="tab-content active">
+                <div class="card">
+                    <h2><i class="fas fa-user-plus"></i> Registro de Cliente</h2>
+                    <form id="client-form">
+                        <div class="form-group">
+                            <label for="firstName"><i class="fas fa-user"></i> Nombre</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName"><i class="fas fa-user"></i> Apellido</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label><i class="fas fa-clock"></i> Sesión Actual</label>
+                            <div id="current-session-display" class="session-info session-morning-info" style="justify-content: center;">
+                                <i class="fas fa-sun"></i> Mañana (6:00 AM - 10:00 AM)
+                            </div>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="membershipType"><i class="fas fa-calendar-alt"></i> Tipo de Suscripción</label>
+                            <select id="membershipType" required>
+                                <option value="">Seleccionar</option>
+                                <option value="daily">Diario</option>
+                                <option value="monthly">Mensual</option>
+                            </select>
+                        </div>
+                       
+                        <div class="form-group" id="monthly-fields" style="display: none;">
+                            <label for="startDate"><i class="fas fa-calendar-plus"></i> Fecha de Inicio</label>
+                            <input type="date" id="startDate">
+                           
+                            <label for="dueDate"><i class="fas fa-calendar-times"></i> Fecha de Vencimiento</label>
+                            <input type="date" id="dueDate">
+                        </div>
+                       
+                        <button type="submit" class="management-btn btn-primary">
+                            <i class="fas fa-save"></i> Registrar Cliente
+                        </button>
+                    </form>
+                   
+                    <div id="form-alert" class="alert hidden"></div>
+                </div>
+            </div>
+           
+            <div id="clients" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-users"></i> Clientes Registrados - <span id="session-clients-label">Mañana</span></h2>
+                    <div class="form-group">
+                        <input type="text" id="search-client" placeholder="Buscar cliente...">
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="client-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clients-list">
+                                <!-- Los clientes se cargarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            <div id="payments" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-money-bill-wave"></i> Registro de Pagos - <span id="session-payments-label">Mañana</span></h2>
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="payment-client"><i class="fas fa-user"></i> Cliente</label>
+                            <select id="payment-client" required>
+                                <option value="">Seleccionar cliente</option>
+                            </select>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="payment-amount"><i class="fas fa-dollar-sign"></i> Monto</label>
+                            <input type="number" id="payment-amount" min="0" step="0.01" required>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="payment-date"><i class="fas fa-calendar-day"></i> Fecha de Pago</label>
+                            <input type="date" id="payment-date" required>
+                        </div>
+                       
+                        <button type="submit" class="management-btn btn-success">
+                            <i class="fas fa-cash-register"></i> Registrar Pago
+                        </button>
+                    </form>
+                </div>
+               
+                <div class="card payment-history">
+                    <h3><i class="fas fa-history"></i> Historial de Pagos - <span id="session-payments-history-label">Mañana</span></h3>
+                    <div style="overflow-x: auto;">
+                        <table class="client-table">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Monto</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-list">
+                                <!-- Los pagos se cargarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            <div id="reports" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-chart-bar"></i> Reportes y Estadísticas - <span id="session-reports-label">Mañana</span></h2>
+                   
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <h3>Total Clientes</h3>
+                            <div class="value" id="total-clients">0</div>
+                        </div>
+                        <div class="summary-card income">
+                            <h3>Ingresos Hoy</h3>
+                            <div class="value" id="today-income">$0.00</div>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Clientes Diarios</h3>
+                            <div class="value" id="daily-clients">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Clientes Mensuales</h3>
+                            <div class="value" id="monthly-clients">0</div>
+                        </div>
+                    </div>
+                   
+                    <div class="last-update" id="last-update">
+                        <i class="fas fa-sync-alt"></i> Última actualización: <span id="update-time"></span>
+                    </div>
+                </div>
+               
+                <div class="card">
+                    <h3><i class="fas fa-clock"></i> Clientes Próximos a Vencer - <span id="session-expiring-label">Mañana</span></h3>
+                    <div style="overflow-x: auto;">
+                        <table class="client-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Vencimiento</th>
+                                    <th>Días Restantes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expiring-list">
+                                <!-- Los clientes próximos a vencer se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floating-btn" id="quick-register-btn">
+            <i class="fas fa-plus"></i>
+        </div>
+       
+        <div class="workout-motivation">
+            <i class="fas fa-fire"></i> <strong>No pain, no gain!</strong> ¡Sigue entrenando!
+        </div>
+    </div>
+
+    <script>
+        // Obtener la sesión seleccionada
+        let currentSession = localStorage.getItem('macggym_selected_session') || 'morning';
+       
+        // Datos de ejemplo para demostración
+        let clients = JSON.parse(localStorage.getItem('macggym_clients')) || [];
+        let payments = JSON.parse(localStorage.getItem('macggym_payments')) || [];
+        let lastIncomeUpdate = localStorage.getItem('macggym_last_income_update') || new Date().toISOString();
+       
+        // Variable para controlar el reinicio diario
+        let lastResetDate = localStorage.getItem('macggym_last_reset_date') || new Date().toISOString().split('T')[0];
+       
+        // Elementos DOM
+        const sessionSelectionScreen = document.getElementById('session-selection-screen');
+        const managementScreen = document.getElementById('management-screen');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const clientForm = document.getElementById('client-form');
+        const paymentForm = document.getElementById('payment-form');
+        const membershipType = document.getElementById('membershipType');
+        const monthlyFields = document.getElementById('monthly-fields');
+        const clientsList = document.getElementById('clients-list');
+        const paymentsList = document.getElementById('payments-list');
+        const paymentClientSelect = document.getElementById('payment-client');
+        const searchClientInput = document.getElementById('search-client');
+        const totalClientsEl = document.getElementById('total-clients');
+        const todayIncomeEl = document.getElementById('today-income');
+        const dailyClientsEl = document.getElementById('daily-clients');
+        const monthlyClientsEl = document.getElementById('monthly-clients');
+        const expiringList = document.getElementById('expiring-list');
+        const formAlert = document.getElementById('form-alert');
+        const updateTimeEl = document.getElementById('update-time');
+        const sessionDisplay = document.getElementById('session-display');
+        const currentSessionDisplay = document.getElementById('current-session-display');
+        const sessionClientsLabel = document.getElementById('session-clients-label');
+        const sessionPaymentsLabel = document.getElementById('session-payments-label');
+        const sessionPaymentsHistoryLabel = document.getElementById('session-payments-history-label');
+        const sessionReportsLabel = document.getElementById('session-reports-label');
+        const sessionExpiringLabel = document.getElementById('session-expiring-label');
+        const quickRegisterBtn = document.getElementById('quick-register-btn');
+       
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si ya hay una sesión seleccionada
+            const savedSession = localStorage.getItem('macggym_selected_session');
+            if (savedSession) {
+                // Si hay una sesión guardada, mostrar directamente la pantalla de gestión
+                openSession(savedSession);
+            }
+           
+            // Configurar fecha actual como predeterminada
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+           
+            // Calcular fecha de vencimiento (30 días desde hoy)
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 30);
+            document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+            document.getElementById('payment-date').value = today;
+           
+            // Verificar si es un nuevo día para reiniciar los ingresos
+            checkDailyReset();
+           
+            // Mostrar/ocultar campos mensuales según tipo de membresía
+            membershipType.addEventListener('change', function() {
+                if (this.value === 'monthly') {
+                    monthlyFields.style.display = 'block';
+                } else {
+                    monthlyFields.style.display = 'none';
+                }
+            });
+           
+            // Búsqueda de clientes
+            searchClientInput.addEventListener('input', updateClientsList);
+           
+            // Verificar si necesitamos actualizar los ingresos (cada 24 horas)
+            checkIncomeUpdate();
+           
+            // Actualizar reportes cada hora
+            setInterval(updateReports, 60 * 60 * 1000);
+           
+            // Verificar reinicio diario cada minuto
+            setInterval(checkDailyReset, 60 * 1000);
+           
+            // Botón de registro rápido
+            quickRegisterBtn.addEventListener('click', function() {
+                // Cambiar a la pestaña de registro
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+               
+                document.querySelector('[data-tab="register"]').classList.add('active');
+                document.getElementById('register').classList.add('active');
+               
+                // Efecto de animación
+                this.classList.add('pulse');
+                setTimeout(() => {
+                    this.classList.remove('pulse');
+                }, 2000);
+            });
+        });
+       
+        // Verificar si es un nuevo día para reiniciar los ingresos
+        function checkDailyReset() {
+            const today = new Date().toISOString().split('T')[0];
+           
+            // Si la fecha ha cambiado, reiniciamos los ingresos
+            if (today !== lastResetDate) {
+                lastResetDate = today;
+                localStorage.setItem('macggym_last_reset_date', lastResetDate);
+               
+                // Actualizar reportes para reflejar el cambio
+                updateReports();
+            }
+        }
+       
+        // Abrir sesión seleccionada
+        function openSession(session) {
+            currentSession = session;
+            localStorage.setItem('macggym_selected_session', session);
+           
+            // Ocultar pantalla de selección y mostrar pantalla de gestión
+            sessionSelectionScreen.style.display = 'none';
+            managementScreen.style.display = 'block';
+           
+            // Actualizar la visualización de la sesión
+            updateSessionDisplay();
+           
+            // Inicializar datos
+            updateClientsList();
+            updatePaymentsList();
+            updatePaymentClientSelect();
+            updateReports();
+            updateLastUpdateTime();
+        }
+       
+        // Cambiar de sesión
+        function changeSession() {
+            // Volver a la pantalla de selección de sesión
+            sessionSelectionScreen.style.display = 'flex';
+            managementScreen.style.display = 'none';
+        }
+       
+        // Navegación por pestañas
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+               
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+               
+                tab.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+               
+                if (tabId === 'clients') {
+                    updateClientsList();
+                } else if (tabId === 'payments') {
+                    updatePaymentClientSelect();
+                    updatePaymentsList();
+                } else if (tabId === 'reports') {
+                    updateReports();
+                }
+            });
+        });
+       
+        // Actualizar la visualización de la sesión
+        function updateSessionDisplay() {
+            const sessionName = currentSession === 'morning' ? 'Mañana' : 'Tarde';
+            const sessionTime = currentSession === 'morning' ? '5:00 AM - 10:00 AM' : '4:00 PM - 9:30 PM';
+            const sessionIcon = currentSession === 'morning' ? 'fa-sun' : 'fa-moon';
+            const sessionClass = currentSession === 'morning' ? 'session-morning-info' : 'session-afternoon-info';
+           
+            // Actualizar header
+            sessionDisplay.className = `session-info ${sessionClass}`;
+            sessionDisplay.innerHTML = `<i class="fas ${sessionIcon}"></i> <span>Sesión ${sessionName}: ${sessionTime}</span>`;
+           
+            // Actualizar formulario de registro
+            currentSessionDisplay.className = `session-info ${sessionClass}`;
+            currentSessionDisplay.style.justifyContent = 'center';
+            currentSessionDisplay.innerHTML = `<i class="fas ${sessionIcon}"></i> ${sessionName} (${sessionTime})`;
+           
+            // Actualizar labels en las pestañas
+            sessionClientsLabel.textContent = sessionName;
+            sessionPaymentsLabel.textContent = sessionName;
+            sessionPaymentsHistoryLabel.textContent = sessionName;
+            sessionReportsLabel.textContent = sessionName;
+            sessionExpiringLabel.textContent = sessionName;
+        }
+       
+        // Registrar nuevo cliente
+        clientForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+           
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const sessionType = currentSession;
+            const membershipTypeValue = document.getElementById('membershipType').value;
+           
+            let startDate = null;
+            let dueDate = null;
+           
+            if (membershipTypeValue === 'monthly') {
+                startDate = document.getElementById('startDate').value;
+                dueDate = document.getElementById('dueDate').value;
+            }
+           
+            const newClient = {
+                id: Date.now().toString(),
+                firstName,
+                lastName,
+                sessionType,
+                membershipType: membershipTypeValue,
+                startDate,
+                dueDate,
+                registrationDate: new Date().toISOString()
+            };
+           
+            clients.push(newClient);
+            saveToLocalStorage();
+            updateClientsList();
+            updatePaymentClientSelect();
+            updateReports();
+           
+            showAlert('Cliente registrado exitosamente', 'success');
+            clientForm.reset();
+           
+            // Restablecer fechas
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+           
+            const newDueDate = new Date();
+            newDueDate.setDate(newDueDate.getDate() + 30);
+            document.getElementById('dueDate').value = newDueDate.toISOString().split('T')[0];
+        });
+       
+        // Registrar pago
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+           
+            const clientId = document.getElementById('payment-client').value;
+            const sessionType = currentSession;
+            const amount = parseFloat(document.getElementById('payment-amount').value);
+            const paymentDate = document.getElementById('payment-date').value;
+           
+            if (!clientId) {
+                showAlert('Por favor seleccione un cliente', 'error');
+                return;
+            }
+           
+            const newPayment = {
+                id: Date.now().toString(),
+                clientId,
+                sessionType,
+                amount,
+                paymentDate
+            };
+           
+            payments.push(newPayment);
+            saveToLocalStorage();
+            updatePaymentsList();
+            updateReports();
+           
+            showAlert('Pago registrado exitosamente', 'success');
+            paymentForm.reset();
+           
+            // Restablecer fecha de pago a hoy
+            document.getElementById('payment-date').value = new Date().toISOString().split('T')[0];
+        });
+       
+        // Funciones auxiliares
+        function updateClientsList() {
+            const searchTerm = searchClientInput.value.toLowerCase();
+            // Filtrar clientes por la sesión actual
+            const filteredClients = clients.filter(client =>
+                `${client.firstName} ${client.lastName}`.toLowerCase().includes(searchTerm) &&
+                client.sessionType === currentSession
+            );
+           
+            clientsList.innerHTML = '';
+           
+            if (filteredClients.length === 0) {
+                clientsList.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay clientes registrados en esta sesión</td></tr>';
+                return;
+            }
+           
+            filteredClients.forEach(client => {
+                const row = document.createElement('tr');
+               
+                // Calcular estado
+                let status = '';
+                let statusClass = '';
+               
+                if (client.membershipType === 'daily') {
+                    status = 'Diario';
+                    statusClass = 'status-daily';
+                } else {
+                    const today = new Date();
+                    const dueDate = new Date(client.dueDate);
+                   
+                    if (dueDate < today) {
+                        status = 'Vencido';
+                        statusClass = 'status-expired';
+                    } else {
+                        status = 'Activo';
+                        statusClass = 'status-active';
+                    }
+                }
+               
+                row.innerHTML = `
+                    <td>${client.firstName} ${client.lastName}</td>
+                    <td>${client.membershipType === 'monthly' ? 'Mensual' : 'Diario'}</td>
+                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td class="actions">
+                        <button class="btn-warning" onclick="editClient('${client.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-danger" onclick="deleteClient('${client.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+               
+                clientsList.appendChild(row);
+            });
+        }
+       
+        function updatePaymentsList() {
+            paymentsList.innerHTML = '';
+           
+            // Filtrar pagos por la sesión actual
+            const sessionPayments = payments.filter(p => p.sessionType === currentSession);
+           
+            if (sessionPayments.length === 0) {
+                paymentsList.innerHTML = '<tr><td colspan="3" style="text-align: center;">No hay pagos registrados en esta sesión</td></tr>';
+                return;
+            }
+           
+            // Ordenar pagos por fecha (más reciente primero)
+            const sortedPayments = [...sessionPayments].sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+           
+            sortedPayments.forEach(payment => {
+                const client = clients.find(c => c.id === payment.clientId);
+                if (!client) return;
+               
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.firstName} ${client.lastName}</td>
+                    <td>$${payment.amount.toFixed(2)}</td>
+                    <td>${formatDate(payment.paymentDate)}</td>
+                `;
+               
+                paymentsList.appendChild(row);
+            });
+        }
+       
+        function updatePaymentClientSelect() {
+            paymentClientSelect.innerHTML = '<option value="">Seleccionar cliente</option>';
+           
+            // Filtrar clientes por la sesión actual
+            const sessionClients = clients.filter(c => c.sessionType === currentSession);
+           
+            sessionClients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.firstName} ${client.lastName}`;
+                paymentClientSelect.appendChild(option);
+            });
+        }
+       
+        function updateReports() {
+            // Filtrar clientes y pagos por la sesión actual
+            const sessionClients = clients.filter(c => c.sessionType === currentSession);
+            const sessionPayments = payments.filter(p => p.sessionType === currentSession);
+           
+            // Total de clientes en la sesión actual
+            totalClientsEl.textContent = sessionClients.length;
+           
+            // Calcular clientes diarios y mensuales
+            const dailyClients = sessionClients.filter(client => client.membershipType === 'daily').length;
+            const monthlyClients = sessionClients.filter(client => client.membershipType === 'monthly').length;
+           
+            dailyClientsEl.textContent = dailyClients;
+            monthlyClientsEl.textContent = monthlyClients;
+           
+            // Calcular ingresos para hoy
+            const today = new Date().toISOString().split('T')[0];
+            const todayIncome = sessionPayments
+                .filter(p => p.paymentDate === today)
+                .reduce((sum, payment) => sum + payment.amount, 0);
+               
+            todayIncomeEl.textContent = `$${todayIncome.toFixed(2)}`;
+           
+            // Actualizar tiempo de última actualización
+            updateLastUpdateTime();
+           
+            // Clientes próximos a vencer (en los próximos 7 días) en la sesión actual
+            const nextWeek = new Date();
+            nextWeek.setDate(nextWeek.getDate() + 7);
+           
+            expiringList.innerHTML = '';
+           
+            const expiringClients = sessionClients.filter(client => {
+                if (client.membershipType !== 'monthly' || !client.dueDate) return false;
+               
+                const dueDate = new Date(client.dueDate);
+                return dueDate >= new Date() && dueDate <= nextWeek;
+            });
+           
+            if (expiringClients.length === 0) {
+                expiringList.innerHTML = '<tr><td colspan="3" style="text-align: center;">No hay clientes próximos a vencer</td></tr>';
+                return;
+            }
+           
+            expiringClients.forEach(client => {
+                const dueDate = new Date(client.dueDate);
+                const daysLeft = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+               
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.firstName} ${client.lastName}</td>
+                    <td>${formatDate(client.dueDate)}</td>
+                    <td>${daysLeft} día${daysLeft !== 1 ? 's' : ''}</td>
+                `;
+               
+                expiringList.appendChild(row);
+            });
+        }
+       
+        function checkIncomeUpdate() {
+            const now = new Date();
+            const lastUpdate = new Date(lastIncomeUpdate);
+            const hoursDiff = (now - lastUpdate) / (1000 * 60 * 60);
+           
+            // Si han pasado más de 24 horas, actualizar
+            if (hoursDiff >= 24) {
+                lastIncomeUpdate = now.toISOString();
+                localStorage.setItem('macggym_last_income_update', lastIncomeUpdate);
+                updateReports();
+            }
+        }
+       
+        function updateLastUpdateTime() {
+            const now = new Date();
+            updateTimeEl.textContent = now.toLocaleString('es-ES');
+        }
+       
+        function editClient(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            if (!client) return;
+           
+            // Cambiar a la pestaña de registro
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(tc => tc.classList.remove('active'));
+           
+            document.querySelector('[data-tab="register"]').classList.add('active');
+            document.getElementById('register').classList.add('active');
+           
+            // Rellenar el formulario con los datos del cliente
+            document.getElementById('firstName').value = client.firstName;
+            document.getElementById('lastName').value = client.lastName;
+            document.getElementById('membershipType').value = client.membershipType;
+           
+            if (client.membershipType === 'monthly') {
+                document.getElementById('startDate').value = client.startDate;
+                document.getElementById('dueDate').value = client.dueDate;
+                monthlyFields.style.display = 'block';
+            } else {
+                monthlyFields.style.display = 'none';
+            }
+           
+            // Eliminar el cliente para actualizarlo después
+            deleteClient(clientId, false);
+        }
+       
+        function deleteClient(clientId, showConfirmation = true) {
+            if (showConfirmation && !confirm('¿Está seguro de que desea eliminar este cliente?')) {
+                return;
+            }
+           
+            clients = clients.filter(c => c.id !== clientId);
+            saveToLocalStorage();
+            updateClientsList();
+            updatePaymentClientSelect();
+            updateReports();
+           
+            if (showConfirmation) {
+                showAlert('Cliente eliminado exitosamente', 'success');
+            }
+        }
+       
+        function showAlert(message, type) {
+            formAlert.textContent = message;
+            formAlert.className = `alert alert-${type}`;
+            formAlert.classList.remove('hidden');
+           
+            setTimeout(() => {
+                formAlert.classList.add('hidden');
+            }, 3000);
+        }
+       
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('es-ES', options);
+        }
+       
+        function saveToLocalStorage() {
+            localStorage.setItem('macggym_clients', JSON.stringify(clients));
+            localStorage.setItem('macggym_payments', JSON.stringify(payments));
+        }
+    </script>
+</body>
+</html>
